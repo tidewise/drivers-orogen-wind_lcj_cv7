@@ -3,7 +3,8 @@ version "0.1"
 
 import_types_from "std"
 import_types_from "base"
-import_types_from "iodrivers_base"
+
+using_task_library "iodrivers_base"
 
 # Task that interprets NMEA0183 data from the CV7 and outputs it on ports
 task_context "Task", subclasses: "iodrivers_base::Task" do
