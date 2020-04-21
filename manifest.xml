@@ -1,0 +1,9 @@
+<package>
+  <description brief="oroGen component to read LCJ Capteurs CV7 wind data (NMEA0183)">
+  </description>
+  <author>Sylvain Joyeux/sylvain.joyeux@tidewise.io</author>
+  <license>LGPLv2 or later</license>
+  <depend package="base/cmake" />
+  <depend package="drivers/marnav" />
+  <depend package="drivers/orogen/iodrivers_base" />
+</package>

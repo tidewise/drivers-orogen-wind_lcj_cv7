@@ -1,0 +1,15 @@
+name "wind_lcj_cv7"
+version "0.1"
+
+import_types_from "std"
+import_types_from "base"
+import_types_from "iodrivers_base"
+
+# Task that interprets NMEA0183 data from the CV7 and outputs it on ports
+task_context "Task", subclasses: "iodrivers_base::Task" do
+    # The measured air speed, projected in the plane of the sensor
+    output_port "air_speed", "/base/samples/RigidBodyState"
+
+    # The measured air temperature
+    output_port "air_temperature", "/base/samples/Temperature"
+end
