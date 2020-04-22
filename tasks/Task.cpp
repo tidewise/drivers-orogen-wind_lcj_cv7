@@ -2,6 +2,10 @@
 
 #include "Task.hpp"
 
+#include <marnav/nmea/mwv.hpp>
+#include <marnav/nmea/xdr.hpp>
+
+using namespace marnav;
 using namespace wind_lcj_cv7;
 
 Task::Task(std::string const& name)
@@ -12,8 +16,6 @@ Task::Task(std::string const& name)
 Task::~Task()
 {
 }
-
-
 
 /// The following lines are template definitions for the various state machine
 // hooks defined by Orocos::RTT. See Task.hpp for more detailed
@@ -34,6 +36,59 @@ bool Task::startHook()
 void Task::updateHook()
 {
     TaskBase::updateHook();
+}
+bool Task::processSentence(marnav::nmea::sentence const& sentence) {
+    if (sentence.id() == nmea::sentence_id::MWV) {
+        auto mwv = nmea::sentence_cast<nmea::mwv>(&sentence);
+        processMWV(*mwv);
+        return true;
+    }
+    else if (sentence.id() == nmea::sentence_id::XDR) {
+        auto xdr = nmea::sentence_cast<nmea::xdr>(&sentence);
+        processXDR(*xdr);
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+void Task::processMWV(marnav::nmea::mwv const& mwv) {
+    auto valid = mwv.get_data_valid();
+    if (!valid || *valid != nmea::status::ok) {
+        return;
+    }
+    if (!mwv.get_angle() || !mwv.get_speed()) {
+        return;
+    }
+
+    double angle = *mwv.get_angle() * M_PI / 180;
+    double speed = *mwv.get_speed();
+
+    auto unit = *mwv.get_speed_unit();
+    double factor = 1;
+    if (unit == nmea::unit::velocity::knot) {
+        factor = 0.514444;
+    }
+    else if (unit == nmea::unit::velocity::kmh) {
+        factor = 1.0 / 3.6;
+    }
+
+    base::samples::RigidBodyState air_speed;
+    air_speed.velocity = Eigen::AngleAxisd(angle, Eigen::Vector3d::UnitZ())
+                         * Eigen::Vector3d(speed * factor, 0, 0);
+    air_speed.time = base::Time::now();
+    _air_speed.write(air_speed);
+}
+void Task::processXDR(marnav::nmea::xdr const& xdr) {
+    auto info = xdr.get_info(0);
+    if (!info) {
+        return;
+    }
+
+    auto temperature = base::samples::Temperature::fromCelsius(
+        base::Time::now(), info->measurement_data
+    );
+    _air_temperature.write(temperature);
 }
 void Task::errorHook()
 {

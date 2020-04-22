@@ -5,8 +5,10 @@
 
 #include "wind_lcj_cv7/TaskBase.hpp"
 
-namespace wind_lcj_cv7{
+#include <marnav/nmea/mwv.hpp>
+#include <marnav/nmea/xdr.hpp>
 
+namespace wind_lcj_cv7 {
     /*! \class Task
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
      * Essential interfaces are operations, data flow ports and properties. These interfaces have been defined using the oroGen specification.
@@ -23,10 +25,11 @@ namespace wind_lcj_cv7{
      */
     class Task : public TaskBase
     {
-	friend class TaskBase;
+        friend class TaskBase;
     protected:
-
-
+        bool processSentence(marnav::nmea::sentence const& sentence);
+        void processMWV(marnav::nmea::mwv const& mwv);
+        void processXDR(marnav::nmea::xdr const& xdr);
 
     public:
         /** TaskContext constructor for Task
