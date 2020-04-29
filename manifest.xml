@@ -5,5 +5,5 @@
   <license>LGPLv2 or later</license>
   <depend package="base/cmake" />
   <depend package="drivers/marnav" />
-  <depend package="drivers/orogen/iodrivers_base" />
+  <depend package="drivers/orogen/nmea0183" />
 </package>
