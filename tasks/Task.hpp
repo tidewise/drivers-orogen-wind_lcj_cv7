@@ -27,6 +27,7 @@ namespace wind_lcj_cv7 {
     {
         friend class TaskBase;
     protected:
+        void processRawSentence(std::string const& sentence_string);
         bool processSentence(marnav::nmea::sentence const& sentence);
         void processMWV(marnav::nmea::mwv const& mwv);
         void processXDR(marnav::nmea::xdr const& xdr);
@@ -40,7 +41,7 @@ namespace wind_lcj_cv7 {
 
         /** Default deconstructor of Task
          */
-	~Task();
+        ~Task();
 
         /** This hook is called by Orocos when the state machine transitions
          * from PreOperational to Stopped. If it returns false, then the

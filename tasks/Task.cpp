@@ -2,13 +2,15 @@
 
 #include "Task.hpp"
 
+#include <marnav/nmea/checksum.hpp>
 #include <marnav/nmea/mwv.hpp>
 #include <marnav/nmea/xdr.hpp>
 
 using namespace marnav;
+using namespace std;
 using namespace wind_lcj_cv7;
 
-Task::Task(std::string const& name)
+Task::Task(string const& name)
     : TaskBase(name)
 {
 }
@@ -36,6 +38,20 @@ bool Task::startHook()
 void Task::updateHook()
 {
     TaskBase::updateHook();
+}
+void Task::processRawSentence(string const& sentence_string) {
+    if (sentence_string.substr(3, 3) != "XDR") {
+        return TaskBase::processRawSentence(sentence_string);
+    }
+
+    // we have to remove the last comma in the string
+    size_t last_comma = sentence_string.find_last_of(",");
+
+    string new_sentence = sentence_string.substr(0, last_comma);
+    int checksum = marnav::nmea::checksum(new_sentence.begin() + 1, new_sentence.end());
+    return TaskBase::processRawSentence(
+        new_sentence + "*" + marnav::nmea::checksum_to_string(checksum)
+    );
 }
 bool Task::processSentence(marnav::nmea::sentence const& sentence) {
     if (sentence.id() == nmea::sentence_id::MWV) {

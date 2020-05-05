@@ -6,4 +6,6 @@
   <depend package="base/cmake" />
   <depend package="drivers/marnav" />
   <depend package="drivers/orogen/nmea0183" />
+
+  <test_depend package="tools/syskit" />
 </package>
