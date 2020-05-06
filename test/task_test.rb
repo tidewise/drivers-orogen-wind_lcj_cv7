@@ -55,15 +55,16 @@ describe OroGen.wind_lcj_cv7.Task do
         assert_in_delta (expected_speed_v - speed.velocity).norm, 0, 1e-3
     end
 
-    it "processes a XDR message" do
+    it "processes a malformed XDR message as sent by the sensor" do
         tic = Time.now
-        sample = expect_execution { syskit_write @io.out_port, @xdr_sentence }
+        sentence = make_packet("$WIXDR,C,030.0,C,,*51\r\n")
+        sample = expect_execution { syskit_write @io.out_port, sentence }
                  .to { have_one_new_sample task.air_temperature_port }
         toc = Time.now
 
         assert_operator tic, :<, sample.time
         assert_operator toc, :>, sample.time
-        assert_in_delta 19.52 + 273.15, sample.kelvin, 1e-3
+        assert_in_delta 30 + 273.15, sample.kelvin, 1e-3
     end
 
     def make_packet(sentence)
