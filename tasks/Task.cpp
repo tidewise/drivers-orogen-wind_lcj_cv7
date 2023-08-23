@@ -6,8 +6,6 @@
 #include <marnav/nmea/mwv.hpp>
 #include <marnav/nmea/xdr.hpp>
 
-#include <base-logging/Logging.hpp>
-
 using namespace marnav;
 using namespace std;
 using namespace wind_lcj_cv7;
