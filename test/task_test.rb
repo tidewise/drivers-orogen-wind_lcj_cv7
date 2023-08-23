@@ -44,7 +44,7 @@ describe OroGen.wind_lcj_cv7.Task do
         toc = Time.now
 
         expected_speed_v = Eigen::Quaternion.from_angle_axis(
-            214.8 * Math::PI / 180, Eigen::Vector3.UnitZ
+            -34.8 * Math::PI / 180, Eigen::Vector3.UnitZ
         ) * Eigen::Vector3.new(0.1 / 3.6, 0, 0)
         expected_direction_v = expected_speed_v.normalize
         direction_v = speed.velocity.normalize

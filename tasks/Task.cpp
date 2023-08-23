@@ -6,6 +6,8 @@
 #include <marnav/nmea/mwv.hpp>
 #include <marnav/nmea/xdr.hpp>
 
+#include <base-logging/Logging.hpp>
+
 using namespace marnav;
 using namespace std;
 using namespace wind_lcj_cv7;
@@ -77,7 +79,7 @@ void Task::processMWV(marnav::nmea::mwv const& mwv) {
         return;
     }
 
-    double angle = *mwv.get_angle() * M_PI / 180;
+    double angle = (-*mwv.get_angle() + 180) * M_PI / 180;
     double speed = *mwv.get_speed();
 
     auto unit = *mwv.get_speed_unit();
